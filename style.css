@@ -20,6 +20,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 100px;
@@ -47,6 +51,12 @@ a {
 button {
   color: inherit;
   font: inherit;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid rgba(47, 103, 199, 0.38);
+  outline-offset: 3px;
 }
 
 img {

@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>W²-VLA · World-to-Wrist</title>
+    <meta
+      name="description"
+      content="Task-conditioned future wrist modeling for fine-grained robot manipulation."
+    />
+    <link rel="canonical" href="https://yyyyu120.github.io/W2-VLA/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="W²-VLA · World-to-Wrist" />
+    <meta
+      property="og:description"
+      content="Task-conditioned future wrist modeling for fine-grained robot manipulation."
+    />
+    <meta
+      property="og:image"
+      content="https://yyyyu120.github.io/W2-VLA/assets/figures/teaser.png"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="stylesheet" href="./style.css" />
+    <script defer src="./script.js"></script>
+  </head>
+  <body>
+    <main id="top">
+      <header class="site-header">
+        <a class="brand" href="#top" aria-label="W squared VLA home">
+          <span class="brand-mark">W²</span>
+        </a>
+        <nav aria-label="Primary navigation">
+          <a href="#overview">Overview</a>
+          <a href="#method">Method</a>
+          <a href="#results">Benchmarks</a>
+          <a href="#real-world">Real world</a>
+          <a href="#visuals">Visuals</a>
+        </nav>
+        <a class="header-cta" href="#results">Explore results <span>↘</span></a>
+      </header>
+
+      <section class="hero" id="overview">
+        <div class="hero-glow hero-glow-one"></div>
+        <div class="hero-glow hero-glow-two"></div>
+        <div class="hero-copy">
+          <h1>
+            <em>World-to-Wrist</em>
+            <span>Task-Conditioned Future Wrist Modeling</span>
+            <span>for Fine-Grained Robot Manipulation</span>
+          </h1>
+
+          <div class="author-block" aria-label="Authors and affiliations">
+            <div class="author-row">
+              <span>Yuhao Pan<sup>1,*</sup></span>
+              <span>Haosong Peng<sup>1,*</sup></span>
+              <span>Zhengshen Zhang<sup>2</sup></span>
+              <span>Zhengyang Yan<sup>1</sup></span>
+            </div>
+            <div class="author-row">
+              <span>Yalun Dai<sup>3</sup></span>
+              <span>Fushuo Huo<sup>7</sup></span>
+              <span>Chujie Wang<sup>4</sup></span>
+              <span>Tianyu Qi<sup>5</sup></span>
+            </div>
+            <div class="author-row">
+              <span>Xiucheng Wang<sup>6</sup></span>
+              <span>Nan Cheng<sup>6</sup></span>
+              <span>Wenchao Xu<sup>1,†</sup></span>
+            </div>
+            <div class="affiliations">
+              <p><sup>1</sup>The Hong Kong University of Science and Technology <span>·</span> <sup>2</sup>National University of Singapore</p>
+              <p><sup>3</sup>Nanyang Technological University <span>·</span> <sup>4</sup>Wuhan University <span>·</span> <sup>5</sup>Sun Yat-sen University</p>
+              <p><sup>6</sup>Xidian University <span>·</span> <sup>7</sup>Southeast University</p>
+              <p class="author-notes"><sup>*</sup>Equal contribution. <span>·</span> <sup>†</sup>Corresponding author.</p>
+            </div>
+          </div>
+
+          <div class="resource-actions" aria-label="Project links">
+            <a class="resource-button primary" href="https://huggingface.co/papers/2605.27367" target="_blank" rel="noopener noreferrer"><span class="button-icon">P</span>Paper</a>
+            <a class="resource-button" href="https://arxiv.org/abs/2605.27367" target="_blank" rel="noopener noreferrer"><span class="button-icon">A</span>arXiv</a>
+            <a class="resource-button" href="https://yyyyu120.github.io/W2-VLA/" target="_blank" rel="noopener noreferrer"><span class="button-icon">P</span>Project Page</a>
+            <a class="resource-button" href="https://huggingface.co/ropedia-ai/DA-Next" target="_blank" rel="noopener noreferrer"><span class="button-icon">M</span>W²-VLA</a>
+            <a class="resource-button" href="https://huggingface.co/datasets/yuuu94/W2-VLA-CoT" target="_blank" rel="noopener noreferrer"><span class="button-icon">C</span>W²-CoT</a>
+            <a class="resource-button" href="https://huggingface.co/datasets/yuuu94/W2-VLA-Training-Data" target="_blank" rel="noopener noreferrer"><span class="button-icon">D</span>Dataset</a>
+          </div>
+
+          <p>W²-VLA turns global task understanding into action-proximal foresight by predicting future wrist latents from a compact, task-conditioned interface and wrist history.</p>
+        </div>
+
+        <div class="hero-stats" aria-label="Key results">
+          <div><strong>98.5<small>%</small></strong><span>LIBERO average</span></div>
+          <div><strong>60.71<small>%</small></strong><span>RoboTwin Easy</span></div>
+          <div><strong>18.21<small>%</small></strong><span>RoboTwin Hard</span></div>
+          <div><strong>80<small>+ Hz</small></strong><span>real-time generation</span></div>
+        </div>
+
+        <figure class="figure-card hero-figure teaser-video-card">
+          <div class="figure-media teaser-video-frame">
+            <video autoplay controls loop muted playsinline poster="./assets/figures/teaser.png" preload="auto" aria-label="World-to-Wrist VLA project teaser video">
+              <source src="https://huggingface.co/datasets/HarrisonPENG/W2-VLA-assets/resolve/main/world-to-wrist-mute-16x9.mp4" type="video/mp4" />
+              Your browser does not support embedded video.
+            </video>
+          </div>
+        </figure>
+      </section>
+
+      <section class="abstract-section page-section">
+        <h2 class="abstract-title">Abstract</h2>
+        <div class="abstract-box">
+          <p>Vision-language-action (VLA) models often treat main-view and wrist-view observations as parallel visual inputs, overlooking their distinct roles in robot manipulation. Fine-grained manipulation, however, benefits from anticipating how wrist-local interactions may evolve under the global task context. To address this limitation, we present <strong>World-to-Wrist VLA (W²-VLA)</strong>, a VLA model for fine-grained robot manipulation with task-conditioned future wrist modeling. Given current multi-view observations and an instruction, W²-VLA contextualizes a set of latent modeling tokens as a compact interface between the VLM and the wrist predictor. Conditioned on this interface and wrist history, the wrist predictor forecasts future wrist latents, which are converted into future-aware context for action prediction. In addition, we propose <strong>W²-CoT</strong>, a synthesis pipeline that produces structured annotations for manipulation progress, physical transition cues, and wrist-local evidence. These structured annotations provide auxiliary supervision to help shape the task-conditioned latent interface. Experiments on LIBERO, RoboTwin 2.0, and real-world manipulation tasks demonstrate improved fine-grained and contact-sensitive manipulation across single-arm and bimanual settings, while maintaining real-time action-generation above 80 Hz.</p>
+        </div>
+        <div class="contribution-strip">
+          <article><span>01</span><h3>Directional modeling</h3><p>Global world context is explicitly routed toward wrist-local dynamics.</p></article>
+          <article><span>02</span><h3>Latent foresight</h3><p>Future wrist representations capture contact, alignment, and release.</p></article>
+          <article><span>03</span><h3>Fast inference</h3><p>A fixed-length latent interface avoids explicit CoT generation at deployment.</p></article>
+        </div>
+      </section>
+
+      <section class="method-section page-section" id="method">
+        <div class="section-heading">
+          <span class="eyebrow">Method</span>
+          <div class="section-title-row"><h2>A two-branch policy joined by one task-conditioned interface.</h2></div>
+        </div>
+        <figure class="figure-card method-figure">
+          <div class="figure-media">
+            <img src="./assets/figures/overview.png" alt="Architecture of W squared VLA with a Qwen VLM world branch, V-JEPA wrist branch, predictor, adapter, and DiT action head" loading="lazy" />
+          </div>
+          <figcaption>W²-VLA overview. Future wrist clips are training-only targets; deployed inference uses current observations, wrist history, and the instruction.</figcaption>
+        </figure>
+        <div class="method-cards">
+          <article><div class="node blue-node">World</div><span>①</span><h3>Task-conditioned interface</h3><p>Current multi-view observations and language contextualize 16 latent modeling tokens inside Qwen-VL.</p></article>
+          <article><div class="node green-node">Wrist</div><span>②</span><h3>Future wrist predictor</h3><p>Frozen V-JEPA wrist-history features are queried by task-conditioned states to forecast local future latents.</p></article>
+          <article><div class="node orange-node">Action</div><span>③</span><h3>Future-aware control</h3><p>A lightweight adapter fuses the predicted wrist context with VLM states for flow-matching action generation.</p></article>
+        </div>
+      </section>
+
+      <section class="results-section page-section" id="results">
+        <div class="section-heading">
+          <span class="eyebrow">Benchmark results</span>
+          <div class="section-title-row"><h2>Strong across single-arm and bimanual manipulation.</h2></div>
+        </div>
+        <div class="results-shell">
+          <div class="tab-list" role="tablist" aria-label="Benchmark result tables">
+            <button type="button" role="tab" aria-selected="true" class="active" data-benchmark="libero">LIBERO</button>
+            <button type="button" role="tab" aria-selected="false" data-benchmark="robotwin">RoboTwin 2.0</button>
+            <button type="button" role="tab" aria-selected="false" data-benchmark="ablation">Ablations</button>
+          </div>
+          <div id="benchmark-panel" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="real-section page-section" id="real-world">
+        <div class="section-heading">
+          <span class="eyebrow">Real-world evaluation</span>
+          <div class="section-title-row"><h2>Robust progress, even when the world changes.</h2></div>
+        </div>
+        <div class="real-world-shell">
+          <div class="real-controls">
+            <div>
+              <span>Condition</span>
+              <div class="segmented" aria-label="Evaluation condition">
+                <button type="button" class="active" aria-pressed="true" data-condition="Standard">Standard</button>
+                <button type="button" aria-pressed="false" data-condition="OOD">OOD</button>
+              </div>
+            </div>
+            <div>
+              <span>Metric</span>
+              <div class="segmented" aria-label="Evaluation metric">
+                <button type="button" class="active" aria-pressed="true" data-metric="success">Success rate</button>
+                <button type="button" aria-pressed="false" data-metric="progress">Progress score</button>
+              </div>
+            </div>
+          </div>
+          <div id="real-content" class="real-content" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="visual-section page-section" id="visuals">
+        <div class="section-heading">
+          <span class="eyebrow">Paper visuals</span>
+          <div class="section-title-row"><h2>From task-level plans to wrist-local evidence.</h2></div>
+        </div>
+        <div class="visual-grid">
+          <figure class="figure-card wide">
+            <div class="figure-media"><img src="./assets/figures/rollouts.png" alt="Real-world rollouts for table cleaning, occluded placement, and bimanual plug insertion" loading="lazy" /></div>
+            <figcaption>Real-world rollouts span long-horizon cleaning, obstacle-aware placement, and contact-rich bimanual insertion.</figcaption>
+          </figure>
+          <figure class="figure-card wide">
+            <div class="figure-media"><img src="./assets/figures/visual.png" alt="Attention visualizations over main and wrist views during simulation and real-world manipulation" loading="lazy" /></div>
+            <figcaption>Latent modeling token attention tracks task-relevant evidence across main and wrist views. CoT text is decoded for visualization only.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="video-section page-section" id="videos">
+        <div class="section-heading">
+          <span class="eyebrow">Real-world videos</span>
+          <div class="section-title-row"><h2>Three tasks across four visual conditions.</h2></div>
+        </div>
+        <div class="demo-video-shell">
+          <div class="demo-task-tabs" role="tablist" aria-label="Real-world video tasks">
+            <button type="button" role="tab" aria-selected="true" class="active" data-video-task="0"><span>01</span>Table Cleaning</button>
+            <button type="button" role="tab" aria-selected="false" data-video-task="1"><span>02</span>Occluded Placement</button>
+            <button type="button" role="tab" aria-selected="false" data-video-task="2"><span>03</span>Bimanual Plug Insertion</button>
+          </div>
+          <div class="demo-video-stage">
+            <video id="demo-video" autoplay controls loop muted playsinline preload="metadata" aria-label="Table Cleaning, Normal demonstration">
+              <source id="demo-video-source" src="https://huggingface.co/datasets/HarrisonPENG/W2-VLA-assets/resolve/main/task1_table_cleaning/normal_demo.mp4" type="video/mp4" />
+              Your browser does not support embedded video.
+            </video>
+          </div>
+          <div class="demo-video-toolbar">
+            <div class="demo-variant-tabs" aria-label="Video conditions">
+              <button type="button" class="active" aria-pressed="true" data-video-variant="0">Normal</button>
+              <button type="button" aria-pressed="false" data-video-variant="1">Background variation</button>
+              <button type="button" aria-pressed="false" data-video-variant="2">Light variation</button>
+              <button type="button" aria-pressed="false" data-video-variant="3">Clutter table</button>
+            </div>
+            <a id="demo-folder-link" href="https://huggingface.co/datasets/HarrisonPENG/W2-VLA-assets/tree/main/task1_table_cleaning" target="_blank" rel="noopener noreferrer">View source videos ↗</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="citation-section" id="citation">
+        <div class="citation-heading"><span class="eyebrow">Citation</span><h2>BibTeX</h2></div>
+        <pre aria-label="BibTeX citation placeholder"><code>@article{w2vla_placeholder,
+  title   = {World-to-Wrist: Task-Conditioned Future Wrist Modeling for Fine-Grained Robot Manipulation},
+  author  = {Author list to be updated},
+  journal = {Venue to be updated},
+  year    = {2027}
+}</code></pre>
+      </section>
+
+      <footer>
+        <div class="brand footer-brand"><span class="brand-mark">W²</span></div>
+        <p>World-to-Wrist: Task-Conditioned Future Wrist Modeling for Fine-Grained Robot Manipulation.</p>
+      </footer>
+    </main>
+  </body>
+</html>

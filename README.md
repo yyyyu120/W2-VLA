@@ -1,18 +1,16 @@
 # W²-VLA Project Page
 
-Project homepage for **World-to-Wrist: Task-Conditioned Future Wrist Modeling for Fine-Grained Robot Manipulation**.
+Static project homepage for **World-to-Wrist: Task-Conditioned Future Wrist Modeling for Fine-Grained Robot Manipulation**.
 
-The page visualizes the paper's LIBERO, RoboTwin 2.0, ablation, real-world progress-rubric, and real-world evaluation results. Main-paper figures are rendered from the LaTeX source and stored under `public/assets/figures/`.
+The deployed website uses plain HTML, CSS, and JavaScript:
 
-## Local development
+- `index.html` — page content and metadata
+- `style.css` — responsive styling
+- `script.js` — benchmark, real-world result, and video interactions
+- `assets/figures/` — project figures
 
-```bash
-npm install
-npm run dev
-```
+No package installation or build step is required. Open `index.html` directly, or serve the repository root with any static file server.
 
-## Production build
+## GitHub Pages
 
-```bash
-npm run build
-```
+In the repository settings, select **Pages → Deploy from a branch → page → /(root)**. GitHub Pages will publish `index.html` directly.
