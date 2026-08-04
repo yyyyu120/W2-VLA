@@ -97,10 +97,10 @@ main {
   display: inline-block;
   color: var(--ink);
   font-family: Georgia, serif;
-  font-size: 34px;
+  font-size: 28px;
   font-weight: 800;
   line-height: 1;
-  letter-spacing: -0.08em;
+  letter-spacing: 0;
 }
 
 .site-header nav {
@@ -293,6 +293,17 @@ main {
   border-color: #9eb2d2;
   box-shadow: 0 8px 20px rgba(40, 60, 94, 0.12);
   transform: translateY(-2px);
+}
+
+.resource-button.is-disabled {
+  cursor: default;
+  opacity: 0.58;
+}
+
+.resource-button.is-disabled:hover {
+  border-color: #cfd8e8;
+  box-shadow: 0 5px 16px rgba(40, 60, 94, 0.07);
+  transform: none;
 }
 
 .resource-button.primary {
