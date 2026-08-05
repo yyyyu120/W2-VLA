@@ -1,0 +1,199 @@
+run_id: subtask_m2w_libero
+run_root_dir: results/Checkpoints
+seed: 42
+trackers: [jsonl, wandb]
+wandb_entity: null
+wandb_project: w2-vla
+is_debug: false
+
+framework:
+  name: QwenSubtaskM2W
+
+  qwenvl:
+    base_vlm: ./playground/Pretrained_models/Qwen3-VL-4B-Instruct
+    attn_implementation: flash_attention_2
+    vl_hidden_dim: 2048
+
+  vjepa2:
+    # Wrist-only latent encoder. Main-view semantics come from Qwen3-VL hidden states.
+    # Preferred path for the method: official V-JEPA2.1 dense encoder via torch.hub.
+    # If you have a local HuggingFace-style checkpoint instead, set backend: hf and
+    # base_encoder: ./playground/Pretrained_models/vjepa2-vitl-fpc64-256.
+    backend: torchhub
+    # Pin the torchhub ref so PyTorch does not probe GitHub for the default branch.
+    hub_repo: facebookresearch/vjepa2:main
+    hub_model: vjepa2_1_vit_large_384
+    hub_source: github
+    pretrained: true
+    base_encoder: null
+    # Use 8 real wrist history frames instead of expanding 4 frames into a
+    # repeated 16-frame pseudo-video.
+    num_frames: 8
+    image_size: 384
+    # Cap dense V-JEPA tokens before M2W cross-attention. Set null/0 to keep all tokens.
+    max_tokens: 256
+
+  main_to_wrist:
+    # Number of compact task-conditioned wrist/future latent tokens.
+    # Similar in spirit to Perceiver-resampled future embeddings.
+    num_latent_tokens: 16
+    num_heads: 8
+    dropout: 0.0
+    # explicit preserves historical autoregressive/teacher-forced CoT. Query
+    # modes insert parallel linguistic query tokens and supervise Qwen's own
+    # LM head with the CoT target during training.
+    cot_reasoning_mode: explicit
+    latent_cot_num_queries: 8
+    latent_cot_max_text_tokens: 128
+    # Historical checkpoints use `mlp`. Current v8 overrides this with a
+    # lightweight 512-d, 2-layer token mixer and an EMA target projector.
+    future_predictor_type: mlp
+    future_predictor_bottleneck_dim: 512
+    future_predictor_num_layers: 2
+    future_predictor_num_heads: 8
+    use_ema_target_projector: false
+    target_ema_decay: 0.99
+    use_cot_loss: true
+    use_wrist_future_loss: true
+    lambda_cot: 0.5
+    lambda_wrist: 0.1
+    generate_cot_at_inference: true
+    inference_cot_max_new_tokens: 96
+    inference_cot_use_cache: true
+    # main: Qwen sees only the main/global view; dual: Qwen sees main + current
+    # wrist frame. Use dual for CoT-only ablations that should match the base
+    # dual-view VLA input without enabling the M2W/V-JEPA branch.
+    qwen_input_views: main
+    # full preserves historical behavior. exclude_cot_prompt keeps the full CoT
+    # for supervision/generation but masks its meta-prompt rules from DiT
+    # cross-attention, retaining only vision, raw instruction, and CoT tokens.
+    qwen_action_context_mode: full
+    # concat appends Q_wrist / C_wrist / pred_future tokens after H_qwen.
+    # qwen_future appends only pred_future and is used by v8.
+    action_condition_mode: concat
+    # reason_qwen: Q_wrist is generated from CoT hidden plus pooled Qwen hidden.
+    # reason_only: v8 simplification; Q_wrist is generated only from CoT hidden.
+    query_condition_mode: reason_qwen
+    # Used only when action_condition_mode: concat.
+    include_wrist_query_in_action: true
+    # Used only when action_condition_mode: concat.
+    include_future_wrist_in_action: true
+
+  action_model:
+    action_model_type: DiT-B
+    action_hidden_dim: 1024
+    hidden_size: 1024
+    add_pos_embed: true
+    max_seq_len: 1024
+    action_dim: 7
+    state_dim: 7
+    future_action_window_size: 7
+    action_horizon: 8
+    past_action_window_size: 0
+    repeated_diffusion_steps: 8
+    noise_beta_alpha: 1.5
+    noise_beta_beta: 1.0
+    noise_s: 0.999
+    num_timestep_buckets: 1000
+    num_inference_timesteps: 4
+    num_target_vision_tokens: 32
+    connect_layer_index: -1
+    diffusion_model_cfg:
+      cross_attention_dim: 2048
+      dropout: 0.1
+      final_dropout: true
+      interleave_self_attention: true
+      norm_type: "ada_norm"
+      num_layers: 16
+      output_dim: 1024
+      positional_embeddings: null
+
+  reduce_in_full_precision: true
+
+datasets:
+  vla_data:
+    dataset_py: subtask_m2w_datasets
+    data_root_dir: playground/Datasets/LEROBOT_LIBERO_DATA
+    data_mix: libero_all
+    action_type: delta_qpos
+    default_image_resolution: [3, 224, 224]
+    per_device_batch_size: 16
+    load_all_data_for_training: true
+    obs: ["image_0"]
+    include_state: false
+    image_size: [224, 224]
+    video_backend: torchvision_av
+    num_workers: 4
+    # Use a short true wrist-frame history for V-JEPA, instead of repeating one
+    # still frame into a pseudo-video.
+    # Current and future wrist clips use 8 real consecutive frames:
+    # [t-7, ..., t] and [f-7, ..., f].
+    wrist_history_frames: 8
+    # Set false for CoT-only / qwen-only ablations to avoid reading temporal
+    # wrist history and future wrist clips that are unused by the forward pass.
+    load_wrist_future_views: true
+    future_wrist_k: 8
+    # clipped_short_horizon uses min(t+k, current segment end) with a next-frame
+    # validity mask near segment boundaries; short_horizon uses raw t+k.
+    future_wrist_target: clipped_short_horizon
+    # When the selected future target is at/before the current step, mask
+    # L_wrist. When the gap is very small, down-weight it because current and
+    # future wrist clips overlap heavily.
+    future_wrist_small_gap: 2
+    future_wrist_small_gap_weight: 0.5
+    subtask_label_dir: playground/Datasets/subtask_m2w_labels_libero_qwen3vl
+    # The complete prompt is saved into every run config and is authoritative
+    # during evaluation. Legacy checkpoints keep their own saved prompt.
+    cot_prompt_version: libero_dual_v3_compact
+    CoT_prompt: |-
+      Your task is: {instruction}
+
+      Using the current main-view and wrist-view images, identify the robot's current manipulation step.
+
+      Output exactly:
+      Subtask: ...
+      Reasoning: ...
+      Wrist: ...
+
+      Do not add extra text.
+
+trainer:
+  max_train_steps: 80000
+  num_warmup_steps: 500
+  # Number of independently noised copies of each action target used by the
+  # QwenSubtaskM2W flow-matching forward pass.
+  repeated_diffusion_steps: 8
+  # M2W training is single-stage: train Qwen-VL with a small LR for CoT
+  # generation when enabled, while always keeping V-JEPA2 frozen.
+  train_qwen_vl: true
+  find_unused_parameters: false
+  save_interval: 5000
+  eval_interval: 1000
+  logging_frequency: 20
+
+  learning_rate:
+    base: 2.5e-5
+    adapter: 5.0e-5
+    action_model: 1.0e-4
+    vlm: 1.0e-5
+
+  lr_scheduler_type: cosine_with_min_lr
+  scheduler_specific_kwargs:
+    min_lr: 1.0e-6
+
+  gradient_clipping: 1.0
+  gradient_accumulation_steps: 1
+
+  optimizer:
+    name: AdamW
+    betas: [0.9, 0.95]
+    eps: 1.0e-8
+    weight_decay: 1.0e-8
+
+  is_resume: false
+  pretrained_checkpoint: null
+  reload_modules: null
+  save_optimizer_state: false
+  resume_optimizer_state: true
+  enable_gradient_checkpointing: true
+  enable_mixed_precision_training: true
