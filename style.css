@@ -452,8 +452,8 @@ main {
 }
 
 .teaser-video-frame video {
-  width: 98%;
-  height: 98%;
+  width: 96%;
+  height: 96%;
   display: block;
   border-radius: 16px;
   object-fit: contain;
