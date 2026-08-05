@@ -325,5 +325,28 @@ document.querySelectorAll("[data-video-variant]").forEach((button) => {
   });
 });
 
+const siteHeader = document.querySelector(".site-header");
+const menuToggle = document.querySelector(".menu-toggle");
+
+function closeMobileMenu() {
+  siteHeader.classList.remove("menu-open");
+  menuToggle.setAttribute("aria-expanded", "false");
+  menuToggle.setAttribute("aria-label", "Open navigation");
+}
+
+menuToggle.addEventListener("click", () => {
+  const isOpen = siteHeader.classList.toggle("menu-open");
+  menuToggle.setAttribute("aria-expanded", String(isOpen));
+  menuToggle.setAttribute("aria-label", isOpen ? "Close navigation" : "Open navigation");
+});
+
+siteHeader.querySelectorAll("nav a").forEach((link) => {
+  link.addEventListener("click", closeMobileMenu);
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closeMobileMenu();
+});
+
 renderBenchmark();
 renderRealWorld();
