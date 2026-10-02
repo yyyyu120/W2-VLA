@@ -42,6 +42,47 @@ context.
 > Some internal modules retain the historical `M2W` identifier for checkpoint
 > compatibility. The public project name is W²-VLA.
 
+## 📈 Performance
+
+### Original LIBERO
+
+W²-VLA is evaluated with 50 trials per task on the four standard LIBERO
+suites. The table below reports task success rates (%); comparisons are
+selected from the complete table in our paper.
+
+| Method | Spatial | Object | Goal | Long | Avg. |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| OpenVLA-OFT | 97.6 | 98.4 | 97.9 | 94.5 | 97.1 |
+| VLA-JEPA | 96.2 | 99.6 | 97.2 | 95.8 | 97.2 |
+| StarVLA | 97.8 | 98.8 | 97.4 | 92.0 | 96.5 |
+| **W²-VLA** | 99.6 | 99.8 | 99.2 | 95.2 | 98.5 |
+
+### Zero-Shot Robustness on LIBERO-Plus
+
+We evaluate W²-VLA on the official
+[LIBERO-Plus](https://github.com/sylvestf/LIBERO-plus) benchmark without using
+LIBERO-Plus perturbation data for training. Following the official protocol,
+we evaluate all **10,030 instances** with **one trial per instance** across
+seven perturbation dimensions. W²-VLA succeeds on **8,424 / 10,030** instances.
+
+| Method | Camera | Robot | Language | Light | Background | Noise | Layout | Overall |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Mantis | 15.7 | 41.8 | 45.9 | 45.1 | 28.9 | 39.2 | 62.5 | 39.8 |
+| Fast-WAM | 16.4 | 44.5 | 68.9 | 78.2 | 53.7 | 37.7 | 60.7 | 51.5 |
+| π₀ | 13.8 | 6.0 | 58.8 | 85.0 | 81.4 | 79.0 | 68.9 | 53.6 |
+| VLA-JEPA | 63.3 | 67.1 | 85.4 | 95.6 | 93.6 | 66.3 | 85.1 | 79.5 |
+| OpenVLA-OFT | 56.4 | 31.9 | 79.5 | 88.7 | 93.3 | 75.8 | 74.2 | 69.6 |
+| StarVLA | 52.5 | 49.8 | 88.5 | 95.7 | 95.7 | 73.0 | 76.9 | 74.1 |
+| Being-H0.7 | 82.0 | 59.0 | 82.8 | 97.8 | 90.0 | 93.5 | 88.5 | 82.1 |
+| Cosmos-Policy | 75.8 | 63.3 | 81.7 | 96.5 | 88.9 | 92.7 | 82.2 | 82.2 |
+| ImageWAM | 80.8 | 50.3 | 91.4 | 98.1 | 85.5 | 93.8 | 80.5 | 83.1 |
+| ABot-M0.5 | 70.5 | 87.4 | 88.6 | 94.0 | 89.7 | 75.5 | 85.2 | 83.4 |
+| **W²-VLA** | 72.9 | 71.9 | 90.3 | 97.5 | 90.4 | 88.0 | 82.7 | 84.0 |
+
+Results are success rates (%). The overall score is computed across all 10,030
+evaluation instances. See the [paper](https://arxiv.org/abs/2608.05369) for the
+complete comparison and experimental details.
+
 ## 🔧 Installation
 
 The reference environment uses Linux, Python 3.10, CUDA, and an NVIDIA GPU
